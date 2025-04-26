@@ -109,4 +109,6 @@ fn menu() !void {
     _ = try bl.insertText(text_x + 10, 18, "Open Settings");
     _ = try bl.insertText(text_x + 10, 21, "Credits");
     _ = try bl.insertText(text_x + 10, 24, "Reload");
+
+    upKey();
 }

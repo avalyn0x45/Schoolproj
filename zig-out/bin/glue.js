@@ -55,7 +55,6 @@ function pdata(pointer, length) {
 function exec(aptr) {
     eval(new TextDecoder().decode(data[aptr]));
 }
-
 function setcookie(aptr) {
     document.cookie = new TextDecoder().decode(data[aptr]);
 }
