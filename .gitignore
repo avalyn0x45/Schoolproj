@@ -1,2 +1,4 @@
 .zig-cache/
 zig-out/bin/inkheart.wasm
+*.mjs
+*.map
