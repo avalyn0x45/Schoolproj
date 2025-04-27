@@ -40,6 +40,8 @@ pub var lines: []Line = undefined;
 var ccpx: u16 = 0;
 var ccpy: u16 = 0;
 
+pub var framerate: u16 = 30;
+
 export fn redraw_ne() void {
     redraw() catch @panic("Error in JS exposed function!");
 }
@@ -127,7 +129,7 @@ pub fn redraw() !void {
         ccpy = ccpyc;
     }
 
-    try js.jsexec("redraw_ne", 32);
+    try js.jsexec("redraw_ne", @intCast(1000 / framerate));
 }
 
 pub fn setLine(index: i32, text: []const u8) void {
