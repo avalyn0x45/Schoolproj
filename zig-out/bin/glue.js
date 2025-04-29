@@ -121,6 +121,7 @@ await WebAssembly.instantiateStreaming(fetch('inkheart.wasm'), {
         sizey: sizey,
         jlog: log,
         logn: (n) => console.log(n),
+        sleep: (delay) => new Promise((resolve) => setTimeout(resolve, delay)),
     }
 }).then(
     (obj) => {

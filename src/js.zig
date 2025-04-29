@@ -59,6 +59,11 @@ pub fn execjs(js_code: []const u8) !void {
     }
 }
 
+pub fn execjs_nc(js_code: []const u8) !void {
+    const aptr = try jsdata(js_code);
+    exec(aptr);
+}
+
 pub fn log(str: []const u8) !void {
     const aptr = try jsdata(str);
     jlog(aptr);

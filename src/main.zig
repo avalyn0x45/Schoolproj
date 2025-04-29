@@ -28,7 +28,7 @@ fn main() !void {
         line.* = bl.Line{
             .x = try wa.alloc(u8, @intCast(js.sizex())),
             .redraw = true,
-            .colors = try wa.alloc(bl.TextColor, 0),
+            .colors = &.{},
         };
     }
 
@@ -52,7 +52,9 @@ export fn credits() void {
 export fn onKey(code: i32) void {
     if (ismenu and code == 13 and !issettings) {
         switch (selection) {
-            0 => undefined, //New game
+            0 => {
+                game(69) catch @panic("Error in JS exposed function.");
+            }, //New game
             1 => undefined, //Load game
             2 => {
                 settings() catch @panic("Error in JS exposed function.");
@@ -219,4 +221,13 @@ fn menu() !void {
 
 fn game(seed: usize) !void {
     _ = seed;
+    ismenu = false;
+    issettings = false;
+
+    bl.fillScreen(' ');
+    for (bl.lines, 0..) |_, i| {
+        bl.clearColor(i);
+    }
+
+    try bl.runAnim(10, 10, &art.player_running_right ** 40, 6);
 }

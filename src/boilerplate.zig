@@ -34,6 +34,13 @@ pub const CursorType = enum {
     Bar,
     Hidden,
 };
+pub const AnimFrame = struct {
+    text: []const u8,
+    deltax: i8,
+    deltay: i8,
+    colors: []const TextColor,
+    height: usize,
+};
 
 var wa = std.heap.wasm_allocator;
 pub var lines: []Line = undefined;
@@ -167,6 +174,7 @@ pub fn insertText(x: usize, y: usize, text: []const u8) !usize {
     var index: usize = 0;
     while (line_it.next()) |line| {
         std.mem.copyForwards(u8, lines[y + index].x[x..], line);
+        lines[y + index].redraw = true;
         index += 1;
     }
     return index;
@@ -204,7 +212,7 @@ pub fn addColor(line_y: usize, color: TextColor) !void {
 
 pub fn clearColor(line_y: usize) void {
     wa.free(lines[line_y].colors);
-    lines[line_y].colors = wa.alloc(TextColor, 0) catch unreachable;
+    lines[line_y].colors = &.{};
 }
 
 pub fn setCursorType(cursor_type: CursorType) !void {
@@ -251,5 +259,43 @@ pub fn genBox(x: usize, y: usize, width: usize, height: usize, char: u8, color: 
             .bg_hi = color.bg_hi,
         });
         lines[yindex].redraw = true;
+    }
+}
+
+pub fn fillArea(x: usize, y: usize, width: usize, height: usize, char: u8) void {
+    for (y..y + height) |line_y| {
+        @memset(lines[line_y].x[x .. x + width], char);
+        lines[line_y].redraw = true;
+    }
+}
+
+export fn runAnim_js(x: i32, y: i32, animation_ptr: i32, animation_len: i32, anim_framerate: i32, w: i32, h: i32, dx: i32, dy: i32) void {
+    fillArea(@intCast(x), @intCast(y), @intCast(w), @intCast(h), ' ');
+
+    const anim_ptr_usize: usize = @intCast(animation_ptr);
+    const anim_len_usize: usize = @intCast(animation_len);
+    const real_anim_ptr: [*]AnimFrame = @ptrFromInt(anim_ptr_usize);
+    const animation = real_anim_ptr[1..anim_len_usize];
+
+    runAnim(@intCast(x + dx), @intCast(y + dy), animation, @intCast(anim_framerate)) catch @panic("Error in JS exposed function.");
+}
+
+pub fn runAnim(x: usize, y: usize, animation: []const AnimFrame, anim_framerate: u8) !void {
+    if (animation.len > 0) {
+        const width = try insertText(x, y, animation[0].text);
+        const js_code = try std.fmt.allocPrint(wa, "setTimeout(()=>wasm.instance.exports.runAnim_js({d},{d},{d},{d},{d},{d},{d},{d},{d}), 1000/{d})", .{
+            x,
+            y,
+            @intFromPtr(animation.ptr),
+            animation.len,
+            anim_framerate,
+            width,
+            animation[0].height,
+            animation[0].deltax,
+            animation[0].deltay,
+            anim_framerate,
+        });
+
+        try js.execjs_nc(js_code);
     }
 }
