@@ -12,8 +12,8 @@ window.term = term;
 let telem = document.getElementById('term');
 term.open(telem);
 
-term.resize(Math.floor((term.cols / telem.offsetWidth) * screen.width), Math.floor((term.rows / telem.offsetHeight) * screen.height))
-//term.resize(200,60);
+//term.resize(Math.floor((term.cols / telem.offsetWidth) * screen.width), Math.floor((term.rows / telem.offsetHeight) * screen.height))
+term.resize(200,60);
 
 telem.addEventListener("click", (e) => telem.requestFullscreen());
 term.onKey((key, ev) => {
