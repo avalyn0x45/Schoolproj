@@ -12,7 +12,9 @@ jobs:
       - name: Install Zig
         run: sudo snap install zig --classic --beta
       - name: Install NPM and esbuild
-        run: sudo apt install nodejs
+        run: |
+          sudo apt install nodejs
+          npm install esbuild
       - name: Clone XTerm.js
         run: git clone https://github.com/xtermjs/xterm.js.git
       - name: ESBuild XTerm.js

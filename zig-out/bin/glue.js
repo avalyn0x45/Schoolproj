@@ -1,6 +1,5 @@
 //This code sucks, but forgive me, I don't use JavaScript.
 import {Terminal} from './xterm.mjs';
-import { FitAddon } from './addon-fit.mjs';
 
 let data = [];
 window.data = data;
@@ -12,9 +11,6 @@ window.term = term;
 
 let telem = document.getElementById('term');
 term.open(telem);
-const fitAddon = new FitAddon();
-term.loadAddon(fitAddon);
-fitAddon.fit();
 
 term.resize(Math.floor((term.cols / telem.offsetWidth) * screen.width), Math.floor((term.rows / telem.offsetHeight) * screen.height))
 //term.resize(200,60);
