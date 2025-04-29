@@ -1,10 +1,5 @@
-.{
-    .name = .inkheart,
-    .version = "0.0.0",
-    .dependencies = .{},
-    .paths = .{
-        "build.zig",
-        "build.zig.zon",
-        "src",
-    },
-}
+.{ .name = .inkheart, .version = "0.0.0", .dependencies = .{}, .paths = .{
+    "build.zig",
+    "build.zig.zon",
+    "src",
+}, .fingerprint = 0xb5f29823d87e3b71 }
